@@ -1,0 +1,42 @@
+services:
+  api:
+    container_name: containers-api-1
+    build:
+      context: ./api
+    ports:
+      - "3000:3000"
+    networks:
+      - jeffops-net
+
+  web:
+    container_name: nginx-jeffops
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - directus
+    networks:
+      - jeffops-net
+
+  directus:
+    image: directus/directus:10.11.2
+    container_name: directus
+    ports:
+      - "8055:8055"
+    volumes:
+      - directus_data:/data
+    environment:
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: Admin1234
+      DB_CLIENT: sqlite
+      DB_FILENAME: /data/db.sqlite
+    networks:
+      - jeffops-net
+
+networks:
+  jeffops-net:
+
+volumes:
+  directus_data:

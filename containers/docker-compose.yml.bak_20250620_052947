@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: containers-api-1
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - jeffops-net
+
+  frontend:
+    container_name: containers-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api
+    networks:
+      - jeffops-net
+
+  directus:
+    image: directus/directus:11.8.0
+    container_name: directus
+    ports:
+      - "8055:8055"
+    volumes:
+      - directus_data:/directus/database
+    environment:
+      SECRET: "changeme-secret"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
+      PUBLIC_URL: "https://admin.rocketcitycarbrokers.com"
+      DB_CLIENT: "sqlite3"
+      DB_FILENAME: "/directus/database/data.db"
+    networks:
+      - jeffops-net
+
+  web:
+    container_name: nginx-jeffops
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - directus
+      - frontend
+    networks:
+      - jeffops-net
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+
+networks:
+  jeffops-net:
+
+volumes:
+  directus_data:

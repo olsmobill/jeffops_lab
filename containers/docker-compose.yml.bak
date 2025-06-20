@@ -1,0 +1,49 @@
+services:
+  api:
+    container_name: containers-api-1
+    build:
+      context: ./api
+    ports:
+      - "3000:3000"
+    networks:
+      - jeffops-net
+
+  web:
+    container_name: nginx-jeffops
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - directus
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt/live/rocketcitycarbrokers.com:/etc/nginx/certs:ro
+      - /nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - jeffops-net
+
+  directus:
+    image: directus/directus:10.11.2
+    container_name: directus
+    ports:
+      - "8055:8055"
+    volumes:
+      - directus_data:/directus/database
+    environment:
+      SECRET: "changeme-secret"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "d1r3ctu5"
+      PUBLIC_URL: "https://rocketcitycarbrokers.com"
+      DB_CLIENT: "sqlite3"
+      DB_FILENAME: "/directus/database/data.db"
+    networks:
+      - jeffops-net
+
+networks:
+  jeffops-net:
+
+volumes:
+  directus_data:

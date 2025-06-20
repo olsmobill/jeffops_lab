@@ -1,0 +1,24 @@
+server {
+    listen 443 ssl;
+    server_name rocketcitycarbrokers.com;
+
+    ssl_certificate     /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+    location /admin/ {
+        proxy_pass http://directus:8055/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /app/ {
+        proxy_pass http://172.31.87.165:3001/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+}
