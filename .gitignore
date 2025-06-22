@@ -1,0 +1,9 @@
+# Ignore secrets, logs, system files
+*.bak.*
+*.log
+*.tmp
+.env
+authinfo
+certs/
+node_modules/
+directus/database/data.db

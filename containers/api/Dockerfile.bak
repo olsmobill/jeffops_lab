@@ -7,5 +7,6 @@ RUN npm install
 COPY app.js .
 
 EXPOSE 3000
+RUN apt-get update && apt-get install -y curl
 RUN apk add --no-cache curl
 CMD ["npm", "start"]

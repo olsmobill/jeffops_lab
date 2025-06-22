@@ -1,0 +1,19 @@
+[
+  {
+    "id": "redeploy",
+    "execute-command": "/home/ubuntu/jeffops_lab/webhook/redeploy.sh",
+    "command-working-directory": "/home/ubuntu/jeffops_lab",
+    "pass-arguments-to-command": [],
+    "response-message": "Redeployment started",
+    "trigger-rule": {
+      "match": {
+        "type": "payload-hash-sha1",
+        "secret": "",
+        "parameter": {
+          "source": "header",
+          "name": "X-Hub-Signature"
+        }
+      }
+    }
+  }
+]

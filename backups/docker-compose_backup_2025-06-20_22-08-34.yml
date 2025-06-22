@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:
   api:
     container_name: containers-api-1
@@ -10,16 +9,6 @@ services:
       - "3000:3000"
     networks:
       - jeffops-net
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost:3000
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   frontend:
     container_name: containers-frontend
     build:
@@ -31,21 +20,9 @@ services:
       - api
     networks:
       - jeffops-net
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost:3000
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   directus:
+    image: directus/directus:11.8.0
     container_name: directus
-    build:
-      context: ./directus
-      dockerfile: Dockerfile
     ports:
       - "8055:8055"
     volumes:
@@ -59,19 +36,6 @@ services:
       - DB_FILENAME=/directus/database/data.db
     networks:
       - jeffops-net
-    depends_on:
-      - api
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost:8055/server/health
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
-
   web:
     container_name: nginx-jeffops
     build:
@@ -89,18 +53,7 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt:ro
-    healthcheck:
-      test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
 networks:
   jeffops-net:
-
 volumes:
   directus_data:

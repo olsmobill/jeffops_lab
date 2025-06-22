@@ -1,9 +1,4 @@
 #!/bin/bash
-echo "🔁 Pulling latest changes..."
-cd /home/ubuntu/jeffops_lab/containers || exit 1
-git pull origin main
 
-echo "📦 Rebuilding containers..."
-docker compose down
-docker compose build
-docker compose up -d
+cd /home/ubuntu/jeffops_lab || exit 1
+git pull origin main && docker compose -f containers/docker-compose.yml up -d
