@@ -7,3 +7,4 @@ authinfo
 certs/
 node_modules/
 directus/database/data.db
+.terraform/
